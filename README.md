@@ -4,21 +4,19 @@ Este projeto se trata de uma API para análise hierárquica de frases e organiza
 O projeto foi desenvolvido em Java e permite a manipulação de estruturas de dados hierárquicas.
 
 ### Funcionalidades
-- POST : Cadastramos uma arvóre, seus nós e folhas.]
-- GetByLevel{id} : Devolvendo uma arvóre em especifico
-- GetAll : Retornando uma listagem das Arvóres cadastradas
--
-- SHORTLY : Navegação e busca em árvores de nós.
-- SHORTLY : Análise de uma palavra especifica por toda uma árvore.
+- POST : Cadastramos uma árvore, seus nós e folhas.
+- GetById: Devolvendo uma árvore em especifico
+- Analyzer: Análise apartir de uma frase se alguma palavra especifica corresponde com uma cadastrada na árvore.
 
 ### Estrutura do Projeto
 O projeto é organizado da seguinte maneira:
 
 - **Entity/**: Contém a classe de modelo utilizada na aplicação.
 - **Controller/**: Contém os métodos de controle HTTP.
-- **Repository/**: Contém o repositório das árvores registradas salvas.
 - **Service/**: Contém as regras de negócios que estão disponivéis e que serão implementados.
-- **Main.java**: O ponto de entrada da aplicação CLI.
+- **Repository/**: Contém o repositório das árvores registradas salvas.
+- **Config/**: Possui a configuração do CROS para permitir acesso do front-end para o back-end.
+- **TreeApiApplication**: O ponto de entrada da aplicação.
 
 ## Requisitos
 
@@ -31,24 +29,54 @@ Para executar o projeto, você precisa ter instalado:
 ### Como Executar
 
 1. Compile o projeto utilizando uma ferramenta de build como Maven.
-   ```bash
+ ```bash
    mvn clean install
-Com a API em execução é possivel enviar uma requisição POST em http://localhost:8080/Tree para criar uma árvore:
+   ```
+2. Com a API em execução é possivel enviar uma requisição POST em http://localhost:8080/Tree para criar uma árvore:
+
+```bash
+  {
+  "nodeTitle": "Animais"
+  }
+```
+3.  É possível continuar adicionando filhos com novas requisições POST em http://localhost:8080/Tree definindo quem é o pai.
 
 ```bash
    {
-  "nodeTitle": "Animais"
-    }
+     "nodeTitle": "Mamiferos",
+     "parent": {
+       "id": 1
+     }
+   }
 ```
-Neste exemplo:
---depth 2 define a profundidade máxima da árvore.
-"Eu amo papagaios" é a frase a ser analisada.
+4. Para visualizar o retorno da árvore em especifico enviamos um requisição GET/id em http://localhost:8080/Tree/1.
+```bash
+   {
+       "id": 1,
+       "nodeTitle": "Animais",
+       "children": [
+           {
+               "id": 2,
+               "nodeTitle": "Mamiferos",
+               "children": []
+           }
+       ]
+   }
+```
+5. Neste exemplo:
+Words : "Eu amo Mamiferos" é a frase a ser analisada.<br/>
+Id : 1 indica que estamos analisando a árvore 1 de (Animais).<br/>
+Depth 0 define a profundidade máxima da árvore.<br/>
+Result é o retorno para analise.
+
 
 ### Exemplo de Saída
 ```
    {
-  "nodeTitle": "Animais",
-  "parent": null
+       "words": "Eu amo Mamiferos",
+       "id": 1,
+       "depth": 0,
+       "result": "{Animais=1}"
    }
 ```
 
